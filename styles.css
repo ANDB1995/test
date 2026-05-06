@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7eaff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.todo-container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 200px;
+  padding: 6px;
+}
+
+button {
+  padding: 6px 10px;
+}
+
+li {
+  margin-top: 8px;
+}
