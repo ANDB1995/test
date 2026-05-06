@@ -1,64 +1,88 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  push,
-  onValue,
-  remove
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCWHVhxcWJIS9KvVkNMF1eanQS1qETbJm0",
-  authDomain: "to-do-list-36eae.firebaseapp.com",
-  databaseURL: "https://to-do-list-36eae-default-rtdb.firebaseio.com",
-  projectId: "to-do-list-36eae",
-  storageBucket: "to-do-list-36eae.firebasestorage.app",
-  messagingSenderId: "948212587236",
-  appId: "1:948212587236:web:ec8effc054efc7de7a2af1"
-};
+const supabaseUrl = "https://ppelqbcafaifrztkuriq.supabase.co/rest/v1/tasks";
+const supabaseAnonKey = "sb_publishable_G1wn5mhCQj4r1Bt_6zWUoA_DXVCalpH";
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const tasksRef = ref(database, "tasks");
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const input = document.getElementById("todo-input");
 const button = document.getElementById("add-todo");
 const list = document.getElementById("todo-list");
 
-button.addEventListener("click", function () {
-  const task = input.value.trim();
+async function loadTasks() {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .order("created_at", { ascending: true });
 
-  if (task === "") {
+  if (error) {
+    console.error("Errore lettura tasks:", error);
     return;
   }
 
-  push(tasksRef, {
-    text: task,
-    createdAt: Date.now()
+  list.innerHTML = "";
+
+  data.forEach(function (task) {
+    addTaskToPage(task);
   });
+}
+
+function addTaskToPage(task) {
+  const item = document.createElement("li");
+  item.dataset.id = task.id;
+  item.textContent = task.text;
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = " Elimina";
+  deleteButton.style.marginLeft = "10px";
+
+  deleteButton.addEventListener("click", async function () {
+    const { error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", task.id);
+
+    if (error) {
+      console.error("Errore eliminazione task:", error);
+    }
+  });
+
+  item.appendChild(deleteButton);
+  list.appendChild(item);
+}
+
+button.addEventListener("click", async function () {
+  const taskText = input.value.trim();
+
+  if (taskText === "") {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("tasks")
+    .insert([{ text: taskText }]);
+
+  if (error) {
+    console.error("Errore inserimento task:", error);
+    return;
+  }
 
   input.value = "";
 });
 
-onValue(tasksRef, function (snapshot) {
-  list.innerHTML = "";
+supabase
+  .channel("tasks-changes")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "tasks"
+    },
+    function () {
+      loadTasks();
+    }
+  )
+  .subscribe();
 
-  snapshot.forEach(function (childSnapshot) {
-    const taskId = childSnapshot.key;
-    const task = childSnapshot.val();
-
-    const item = document.createElement("li");
-    item.textContent = task.text;
-
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = " Elimina";
-    deleteButton.style.marginLeft = "10px";
-
-    deleteButton.addEventListener("click", function () {
-      remove(ref(database, "tasks/" + taskId));
-    });
-
-    item.appendChild(deleteButton);
-    list.appendChild(item);
-  });
-});
+loadTasks();
