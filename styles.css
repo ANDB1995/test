@@ -1,64 +1,58 @@
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #f3d9ff, #dbeafe);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  color: #333;
 }
 
 .todo-container {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  background: white;
   padding: 30px;
   border-radius: 20px;
-  width: 360px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  animation: fadeIn 0.5s ease;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 25px;
   color: #7c3aed;
-  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
 }
 
 input {
-  width: calc(100% - 95px);
-  padding: 12px;
+  flex: 1;
+  padding: 10px;
   border: 2px solid #ddd;
-  border-radius: 12px;
+  border-radius: 10px;
   outline: none;
-  font-size: 15px;
-  transition: 0.2s;
+  font-size: 14px;
 }
 
 input:focus {
   border-color: #7c3aed;
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
 }
 
 button {
-  padding: 12px 14px;
+  padding: 10px 14px;
   border: none;
-  border-radius: 12px;
-  background: #7c3aed;
+  border-radius: 10px;
+  background-color: #7c3aed;
   color: white;
-  font-weight: bold;
   cursor: pointer;
+  font-weight: bold;
   transition: 0.2s;
 }
 
 button:hover {
-  background: #6d28d9;
-  transform: translateY(-1px);
-}
-
-button:active {
-  transform: scale(0.98);
+  background-color: #6d28d9;
 }
 
 #todo-list {
@@ -69,47 +63,21 @@ button:active {
 
 li {
   background: #f9f5ff;
-  padding: 12px 14px;
-  margin-top: 12px;
-  border-radius: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  animation: slideUp 0.25s ease;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
   border: 1px solid #eee;
+  font-size: 15px;
+  word-break: break-word;
 }
 
 li button {
-  background: #ef4444;
-  padding: 8px 10px;
-  font-size: 13px;
-  border-radius: 10px;
+  background-color: #ef4444;
+  margin-left: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 li button:hover {
-  background: #dc2626;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background-color: #dc2626;
 }
